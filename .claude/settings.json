@@ -29,7 +29,13 @@
       "Bash(vercel --prod *)",
       "Bash(vercel deploy --prod *)",
       "Read(./.env)",
-      "Read(./.env.*)"
+      "Read(./.env.*)",
+      "Edit(gate.config.mjs)",
+      "Edit(scripts/gate/**)",
+      "Edit(scripts/ci/**)",
+      "Edit(scripts/rulesets/**)",
+      "Edit(.github/workflows/**)",
+      "Edit(.claude/settings.json)"
     ]
   }
 }
