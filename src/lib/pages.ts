@@ -35,6 +35,11 @@ export const internalPages = {
     title: 'Section catalog',
     description: 'Every section in the agency site kit, rendered with the current client facts and tokens.',
   },
+  enquirySent: {
+    path: '/enquiry-sent',
+    title: 'Enquiry sent',
+    description: 'Confirmation page shown after the enquiry form is sent without JavaScript.',
+  },
   notFound: {
     path: '/404',
     title: 'Page not found',

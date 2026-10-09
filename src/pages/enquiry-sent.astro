@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import { internalPages } from '../lib/pages';
+
+// Where the enquiry form lands when JavaScript is off. noindex, out of the sitemap.
+---
+
+<BaseLayout page={internalPages.enquirySent} noindex>
+  <section class="section-y">
+    <div class="wrap max-w-xl">
+      <h1 class="display text-4xl">Enquiry sent</h1>
+      <p class="lead mt-4">Thank you. Your enquiry has reached the team, and they will reply by email.</p>
+      <Button href="/" label="Back to the home page" variant="secondary" class="mt-8" />
+    </div>
+  </section>
+</BaseLayout>

@@ -20,7 +20,7 @@ SEO, facts). Your job is to move the look across without losing the structure.
    section's classes when the design differs. Create a new section only when nothing fits, and say so.
 5. Write `docs/design-mapping.md`: a table of design block → kit section, plus every place you departed
    from the design and why (contrast, performance, a fact the design invented).
-6. `pnpm build`, `pnpm preview`, then open `/kit` and compare with the handoff.
+6. `pnpm build`, `pnpm preview --background`, then open `/kit` and compare with the handoff.
 
 ## Do not
 

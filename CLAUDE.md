@@ -68,11 +68,11 @@ block in `astro.config.mjs`, and its layouts onto existing sections.
 pnpm dev                      # http://localhost:4321
 pnpm build                    # also validates client/facts.yaml
 pnpm check                    # TypeScript and Astro diagnostics
-pnpm preview                  # serve the build on :4321 (runs in the background; `pnpm astro preview stop`)
+pnpm preview --background     # serve the build on :4321; stop with `pnpm astro preview stop`
 pnpm gate                     # quality gate against :4321. Writes reports/gate.md
 ```
 
-Before you say a change is done: `pnpm check`, `pnpm build`, `pnpm preview`, `pnpm gate`. Report the gate
+Before you say a change is done: `pnpm check`, `pnpm build`, `pnpm preview --background`, `pnpm gate`. Report the gate
 result as it is. Fix gate errors with `/fix-gate`; never by editing `gate.config.mjs` or `scripts/gate/`.
 
 ## Git

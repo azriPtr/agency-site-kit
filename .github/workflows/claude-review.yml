@@ -27,7 +27,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check for the Claude token
+        id: token
+        run: |
+          if [ -n "$TOKEN" ]; then echo "ok=true" >> "$GITHUB_OUTPUT"
+          else echo "::notice::Claude review skipped: add the CLAUDE_CODE_OAUTH_TOKEN secret (claude setup-token) to enable it."; fi
+        env:
+          TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
       - uses: anthropics/claude-code-action@v1
+        if: steps.token.outputs.ok == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         with:

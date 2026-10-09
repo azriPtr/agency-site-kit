@@ -10,6 +10,7 @@ import Gallery from '../components/sections/Gallery.astro';
 import Faq from '../components/sections/Faq.astro';
 import Location from '../components/sections/Location.astro';
 import CtaBand from '../components/sections/CtaBand.astro';
+import Enquiry from '../components/sections/Enquiry.astro';
 import { facts } from '../lib/facts';
 import { clientImage } from '../lib/images';
 import { headerCta, internalPages } from '../lib/pages';
@@ -59,6 +60,8 @@ const label = 'wrap block py-3 font-mono text-xs text-ink-muted';
   <Location eyebrow="Eyebrow" title="Location title">
     <p>Directions copy in the default slot.</p>
   </Location>
+  <span class={label}>sections/Enquiry.astro</span>
+  <Enquiry eyebrow="Eyebrow" title="Enquiry title" lead="One line on what happens after sending." />
   <span class={label}>sections/CtaBand.astro</span>
   <CtaBand title="CTA band title" text="One supporting sentence." cta={headerCta} />
 </BaseLayout>
