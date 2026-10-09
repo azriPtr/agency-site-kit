@@ -1,6 +1,7 @@
 // @ts-check
 import { readFileSync } from 'node:fs';
 import { defineConfig, fontProviders } from 'astro/config';
+import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { parse } from 'yaml';
@@ -9,7 +10,7 @@ import { parse } from 'yaml';
 const { site } = parse(readFileSync(new URL('./client/facts.yaml', import.meta.url), 'utf8'));
 
 /** Pages that exist for the team, not for search. Kept out of the sitemap; they also carry noindex. */
-const internal = ['/kit', '/404'];
+const internal = ['/kit', '/404', '/enquiry-sent'];
 
 export default defineConfig({
   site: site.url,
@@ -17,6 +18,8 @@ export default defineConfig({
   trailingSlash: 'never',
   build: { format: 'file' },
   integrations: [
+    // React only hydrates islands (the enquiry form). Pages ship no framework JS.
+    react(),
     sitemap({
       filter: (page) => !internal.includes(new URL(page).pathname),
     }),

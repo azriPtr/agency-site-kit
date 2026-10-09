@@ -61,7 +61,8 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium
       - name: Gate against live production
         id: gate
-        run: pnpm gate --url "${{ steps.site.outputs.url }}" --expect indexable --only seo,lh --lh-runs 3 --no-shots
+        # PRODUCTION_EXPECT defaults to indexable. Set it to noindex only for a site that must stay out of search (a demo).
+        run: pnpm gate --url "${{ steps.site.outputs.url }}" --expect ${{ vars.PRODUCTION_EXPECT || 'indexable' }} --only seo,lh --lh-runs 3 --no-shots
 
       - uses: actions/upload-artifact@v7
         if: always()

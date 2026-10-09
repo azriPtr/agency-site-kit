@@ -32,7 +32,7 @@ person reviews and releases.
 ## Check
 
 1. `pnpm check` and `pnpm build`. Fix every error.
-2. `pnpm preview`, then `pnpm gate`. Fix errors with the approach in `/fix-gate`. Do not edit the gate.
+2. `pnpm preview --background`, then `pnpm gate`. Fix errors with the approach in `/fix-gate`. Do not edit the gate.
 3. Ask the `fact-checker` subagent to check every page file you wrote. Fix what it finds.
 4. Stop the preview server: `pnpm astro preview stop`.
 

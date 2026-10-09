@@ -34,7 +34,10 @@ jobs:
       - name: Build
         run: pnpm build
       - name: Serve the build
-        run: pnpm preview --port 4321
+        run: |
+          pnpm preview --port 4321 --background
+          for _ in $(seq 1 30); do curl -sf http://localhost:4321/ > /dev/null && exit 0; sleep 1; done
+          pnpm astro preview logs; exit 1
 
       - name: Run the gate
         id: gate

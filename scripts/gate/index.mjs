@@ -2,7 +2,7 @@
 /**
  * pnpm gate: the quality gate every change passes before a human reviews it.
  *
- *   pnpm gate                                   # against http://localhost:4321 (pnpm preview)
+ *   pnpm gate                                   # against http://localhost:4321 (pnpm preview --background)
  *   pnpm gate --url https://staging.example.com --expect noindex
  *   pnpm gate --url https://example.com --expect indexable --only seo
  *
@@ -52,7 +52,7 @@ if (args.expect && !['indexable', 'noindex'].includes(args.expect)) {
 try {
   await fetch(base);
 } catch {
-  console.error(`[gate] Cannot reach ${base}. Run \`pnpm build && pnpm preview\` first, or pass --url.`);
+  console.error(`[gate] Cannot reach ${base}. Run \`pnpm build && pnpm preview --background\` first, or pass --url.`);
   process.exit(2);
 }
 
@@ -86,7 +86,7 @@ if (only.has('a11y')) {
 if (only.has('lh')) {
   const runs = Number(args['lh-runs'] ?? config.lighthouse.runs);
   log(`Lighthouse (${config.lighthouse.formFactor}, ${runs} run${runs > 1 ? 's' : ''} per page)`);
-  const lh = await checkLighthouse({ base, pages, config, runs });
+  const lh = await checkLighthouse({ base, pages, config, runs, expect: args.expect });
   report.findings.push(...lh.findings);
   report.lighthouse = lh.results;
 }

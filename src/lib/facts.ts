@@ -69,6 +69,8 @@ export const FactsSchema = z.object({
      * model-training crawlers. block: none of them.
      */
     aiCrawlers: z.enum(['allow', 'search-only', 'block']).default('allow'),
+    /** Optional line shown above the header on every page (closures, renovations, a demo disclaimer). */
+    notice: z.string().optional(),
   }),
   business: z.object({
     name: z.string(),

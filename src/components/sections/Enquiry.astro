@@ -1,0 +1,26 @@
+---
+import EnquiryForm from '../islands/EnquiryForm';
+import SectionHeading from '../ui/SectionHeading.astro';
+import { facts } from '../../lib/facts';
+
+/**
+ * Enquiry form section. The form is a React island (hydrated when visible);
+ * its back end is api/enquiry.ts, which posts to the team's Discord channel.
+ * It is the only section in the kit that ships client-side JavaScript.
+ */
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+}
+
+const { eyebrow, title, lead } = Astro.props;
+const rooms = facts.rooms.map((r) => ({ id: r.id, name: r.name }));
+---
+
+<section class="section-y" id="enquire">
+  <div class="wrap grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-20">
+    <SectionHeading eyebrow={eyebrow} title={title} lead={lead} />
+    <EnquiryForm client:visible rooms={rooms} email={facts.business.email} />
+  </div>
+</section>

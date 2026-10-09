@@ -33,5 +33,5 @@ finding with `"level": "error"`, one at a time, at its cause.
 
 ## Finish
 
-Re-run `pnpm build`, `pnpm preview`, `pnpm gate`. Report what each error was, what you changed, and the
+Re-run `pnpm build`, `pnpm preview --background`, `pnpm gate`. Report what each error was, what you changed, and the
 new result. If an error remains, say which and why.

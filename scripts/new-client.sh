@@ -3,7 +3,7 @@
 # on disk, dependencies installed, and the remaining one-time steps printed.
 #
 #   scripts/new-client.sh <repo-name>
-#   scripts/new-client.sh demo-resort-site
+#   VISIBILITY=public scripts/new-client.sh demo-resort-site
 set -euo pipefail
 
 name=${1:?usage: scripts/new-client.sh <repo-name>}
@@ -12,7 +12,7 @@ template=$(cd "$kit_dir" && gh repo view --json nameWithOwner --jq .nameWithOwne
 owner=$(gh api user --jq .login)
 
 cd "$(dirname "$kit_dir")"
-gh repo create "$owner/$name" --private --template "$template" --clone
+gh repo create "$owner/$name" --"${VISIBILITY:-private}" --template "$template" --clone
 cd "$name"
 pnpm install --silent
 pnpm exec playwright install chromium > /dev/null
