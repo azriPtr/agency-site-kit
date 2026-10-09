@@ -57,7 +57,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cat reports/gate.md > comment.md
+          if [ -f reports/gate.md ]; then
+            cat reports/gate.md > comment.md
+          else
+            printf '<!-- quality-gate -->\n## Quality gate: ❌ did not run\n\nThe type check or the build failed before the gate could start. The run log says which.\n\n' > comment.md
+          fi
           echo "[Full report and screenshots](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> comment.md
           scripts/ci/upsert-comment.sh ${{ github.event.pull_request.number }} '<!-- quality-gate -->' comment.md
 

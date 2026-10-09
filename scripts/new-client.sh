@@ -24,6 +24,14 @@ cd "$name"
 gh api "repos/$owner/$name/git/refs" -X POST -f ref=refs/heads/production \
   -f sha="$(gh api "repos/$owner/$name/git/ref/heads/main" --jq .object.sha)" > /dev/null
 
+# Branch rules enforced by GitHub, for everyone including the agent: main only changes through a PR
+# with a passing Quality gate and Human review, production only moves forward. Rulesets need a public
+# repo, or a paid plan for private ones.
+for rule in main production; do
+  gh api -X POST "repos/$owner/$name/rulesets" --input "$kit_dir/scripts/rulesets/$rule.json" > /dev/null \
+    || echo "Could not add the $rule ruleset (private repo on a free plan?). See PLAYBOOK.md, Branch rules."
+done
+
 pnpm install --silent
 pnpm exec playwright install chromium > /dev/null
 
