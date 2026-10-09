@@ -28,6 +28,12 @@ nobody types a price into a page. That is how the price on the page, in Google's
 **Nothing reaches production without a person.** The agent can build and open a PR. It cannot merge,
 cannot push to `main` or `production`, and cannot change the gate that checks its work.
 
+Two layers enforce this. `.claude/settings.json` denies the agent's usual commands, but it matches
+command text, so it is a guardrail: during the Demo Resort build a plain `git push` from `main` got past
+it. The lock is on GitHub: rulesets (in `scripts/rulesets/`, added by `new-client.sh`) reject any push
+to `main` that is not a merged PR with a passing Quality gate and Human review, and any rewrite or
+deletion of `production`. Nobody bypasses them, admins included.
+
 ## Setting up a new client
 
 You need, once per laptop: Node 24, pnpm, GitHub CLI (`gh auth login`), Vercel CLI (`vercel login`),
@@ -41,7 +47,9 @@ OWNER=<github-org> scripts/new-client.sh <client>-site
 Leave out `OWNER` to create the repo under your own account. Add `VISIBILITY=public` for a public repo.
 
 This creates the repo from the template next to the kit, creates the `production` branch Vercel will
-track, installs dependencies and the browser the gate uses, and prints the steps below.
+track, adds the branch rulesets, installs dependencies and the browser the gate uses, and prints the steps
+below. Rulesets need a public repo or a paid GitHub plan; on a private repo under a free plan the script
+says so and the release preflight is the only check.
 
 1. **Notes.** Put everything the client sent into `client/notes/` (emails, WhatsApp exports, call notes,
    old website text). Open Claude Code in the repo and run `/intake client/notes/`. Send
