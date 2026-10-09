@@ -15,7 +15,8 @@ person reviews and releases.
 2. If `client/facts.yaml` has a `TODO` in a field a page needs, stop and list it. Do not work around it.
 3. If `docs/design-mapping.md` exists, follow it. If it does not and no design handoff is in the session,
    build with the current tokens and say so in the PR.
-4. `git switch -c site/build-from-brief`
+4. If the current branch starts with `site/`, keep working on it (intake and design usually happened there).
+   Otherwise `git switch -c site/build-from-brief`.
 
 ## Build
 
@@ -39,7 +40,7 @@ person reviews and releases.
 ## Hand off
 
 1. Commit in logical steps (pages, structured data, copy fixes), each message saying what and why.
-2. `git push -u origin site/build-from-brief`, then `gh pr create` with the template:
+2. `git push -u origin <branch>`, then `gh pr create` with the template:
    - **What changed**: pages built, sections used, any new section and why.
    - **How it was made**: "Drafted with /build-from-brief", the gate result (paste the summary table from
      `reports/gate.md`), what the fact-checker caught and what you changed, and every TODO or open
