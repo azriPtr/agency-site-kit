@@ -20,10 +20,15 @@ client, and the step where a wrong guess costs the most: everything downstream t
    - Do not fill `geo` from your own knowledge of the area. Use coordinates the client gave, or TODO.
    - Treatment and menu descriptions: the client's words, shortened if needed, never improved with
      benefits they did not claim.
-3. Write `client/brief.md` from the template's headings. Fill what the notes say. Under **Must not say**,
+   - Images: open each photo in `src/assets/client/` and pick the best fit for `business.image` and each
+     room. Alt text says what is in the photo ("Canopy bed under a thatched ceiling"), not what you
+     hope it sells. A photo that does not show the thing it illustrates gets a TODO, not a stretched alt.
+3. Set the production host in `vercel.json`: the X-Robots-Tag rule's `missing` host must be the host of
+   `site.url`, so every other host (previews, staging) stays noindex. The build fails if they differ.
+4. Write `client/brief.md` from the template's headings. Fill what the notes say. Under **Must not say**,
    add the category risks for this client type (wellness: medical claims; hotels: unverified distances,
    awards, star ratings; F&B: "authentic", sourcing claims) on top of anything the client said.
-4. List open questions in `client/QUESTIONS.md`: one line per TODO, written so a project manager can paste
+5. List open questions in `client/QUESTIONS.md`: one line per TODO, written so a project manager can paste
    it into WhatsApp to the client.
 
 ## Report back
