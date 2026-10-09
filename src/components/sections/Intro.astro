@@ -1,0 +1,39 @@
+---
+import SectionHeading from '../ui/SectionHeading.astro';
+
+/**
+ * Opening copy for a page, with an optional list of key facts beside it
+ * (check-in time, number of villas, distance). Pass fact values from
+ * client/facts.yaml, not typed into the page.
+ */
+interface Props {
+  eyebrow?: string;
+  title: string;
+  keyFacts?: { label: string; value: string }[];
+}
+
+const { eyebrow, title, keyFacts = [] } = Astro.props;
+---
+
+<section class="section-y">
+  <div class="wrap grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:gap-20">
+    <div>
+      <SectionHeading eyebrow={eyebrow} title={title} />
+      <div class="copy lead mt-6 max-w-2xl">
+        <slot />
+      </div>
+    </div>
+    {
+      keyFacts.length > 0 && (
+        <dl class="grid content-start gap-px self-start border border-line bg-line">
+          {keyFacts.map((f) => (
+            <div class="bg-base p-5">
+              <dt class="eyebrow text-ink-muted">{f.label}</dt>
+              <dd class="display mt-2 text-2xl">{f.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+  </div>
+</section>

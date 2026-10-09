@@ -1,0 +1,40 @@
+---
+import SectionHeading from '../ui/SectionHeading.astro';
+import { facts } from '../../lib/facts';
+
+/**
+ * Questions from facts.faq. Answers are policies the client confirmed, so
+ * they live in facts. Pair with faqNode() in the page's jsonLd so the
+ * visible answers and the FAQPage markup are the same text.
+ */
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  items?: { q: string; a: string }[];
+}
+
+const { eyebrow, title = 'Questions', items = facts.faq } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <section class="section-y">
+      <div class="wrap grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-20">
+        <SectionHeading eyebrow={eyebrow} title={title} />
+        <div class="divide-y divide-line border-y border-line">
+          {items.map((item) => (
+            <details class="group py-5">
+              <summary class="flex cursor-pointer list-none items-start justify-between gap-6 font-medium [&::-webkit-details-marker]:hidden">
+                {item.q}
+                <span aria-hidden="true" class="text-ink-muted transition-transform group-open:rotate-45">
+                  +
+                </span>
+              </summary>
+              <p class="mt-3 max-w-2xl text-ink-muted">{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

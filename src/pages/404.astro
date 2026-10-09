@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import { internalPages } from '../lib/pages';
+---
+
+<BaseLayout page={internalPages.notFound} noindex>
+  <section class="section-y">
+    <div class="wrap max-w-xl">
+      <p class="eyebrow text-brand">404</p>
+      <h1 class="display mt-3 text-4xl">This page does not exist</h1>
+      <p class="lead mt-4">The link may be old, or the address may have a typo.</p>
+      <Button href="/" label="Go to the home page" class="mt-8" />
+    </div>
+  </section>
+</BaseLayout>

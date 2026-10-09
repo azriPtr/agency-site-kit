@@ -1,0 +1,105 @@
+# client/facts.yaml
+#
+# Everything on the site that can be checked against reality lives here: names,
+# address, phone, hours, prices, sizes. Pages read these values; they never
+# retype them. The schema in src/lib/facts.ts validates this file on every build.
+#
+# Rules
+# - Only facts the client confirmed in writing. If a value is unknown, write
+#   TODO and leave it: staging still builds, the production gate fails on TODO.
+# - Prices are whole numbers in business.currency.
+# - Image paths are relative to src/assets/client/. Alt text describes the photo.
+#
+# This file is the kit's example client. /intake replaces it for a real client.
+
+site:
+  url: https://example.com
+  language: en
+  ogLocale: en_US
+  aiCrawlers: allow
+
+business:
+  name: Example Resort
+  type: Resort
+  description: >-
+    Example Resort is placeholder data for the agency site kit: twelve villas, a
+    restaurant and a spa. Replace this file with the client's confirmed facts.
+  phone: +62 361 000 000
+  whatsapp: +62 812 0000 0000
+  email: hello@example.com
+  address:
+    street: Jl. Example No. 1
+    locality: Ubud
+    region: Bali
+    postalCode: "80571"
+    country: ID
+  geo:
+    lat: -8.5069
+    lng: 115.2625
+  mapUrl: https://maps.google.com/?q=-8.5069,115.2625
+  currency: IDR
+  priceRange: $$$
+  checkIn: "14:00"
+  checkOut: "12:00"
+  amenities:
+    - Outdoor pool
+    - Free Wi-Fi
+    - Airport transfer on request
+  sameAs: []
+  image:
+    src: example/hero.jpg
+    alt: Placeholder photo standing in for the resort's main view
+
+rooms:
+  - id: garden-villa
+    name: Garden Villa
+    sizeSqm: 60
+    bed: King
+    maxGuests: 2
+    priceFrom: 2500000
+    features: [Private terrace, Outdoor shower]
+    image:
+      src: example/room-1.jpg
+      alt: Placeholder photo standing in for the Garden Villa
+  - id: pool-villa
+    name: Pool Villa
+    sizeSqm: 95
+    bed: King
+    maxGuests: 3
+    priceFrom: 4200000
+    features: [Private pool, Daybed]
+    image:
+      src: example/room-2.jpg
+      alt: Placeholder photo standing in for the Pool Villa
+
+dining:
+  name: Example Kitchen
+  cuisine: [Indonesian]
+  acceptsReservations: true
+  hours:
+    - days: [Mo, Tu, We, Th, Fr, Sa, Su]
+      opens: "07:00"
+      closes: "22:00"
+  menu:
+    - section: Mains
+      items:
+        - name: Example dish
+          description: Placeholder menu item.
+          price: 120000
+          diet: [vegetarian]
+
+spa:
+  name: Example Spa
+  hours:
+    - days: [Mo, Tu, We, Th, Fr, Sa, Su]
+      opens: "09:00"
+      closes: "20:00"
+  treatments:
+    - name: Example massage
+      durationMin: 60
+      price: 450000
+      description: Placeholder treatment.
+
+faq:
+  - q: What time is check-in?
+    a: Check-in is from 14:00 and check-out is until 12:00.

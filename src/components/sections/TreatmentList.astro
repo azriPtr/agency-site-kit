@@ -1,0 +1,49 @@
+---
+import HoursList from './HoursList.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import { facts, formatPrice } from '../../lib/facts';
+
+/**
+ * Spa treatments from facts.spa: name, duration and price are facts.
+ * Wellness copy is where AI drafts most often overclaim ("detoxifies",
+ * "heals"), so treatment descriptions also live in facts, as the client
+ * wrote them, not in page copy.
+ */
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+}
+
+const { eyebrow, title, lead } = Astro.props;
+const spa = facts.spa;
+---
+
+{
+  spa && (
+    <section class="section-y bg-base-alt">
+      <div class="wrap grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-20">
+        <div>
+          <SectionHeading eyebrow={eyebrow} title={title} lead={lead} />
+          <div class="mt-8">
+            <HoursList hours={spa.hours} />
+          </div>
+        </div>
+        <ul class="divide-y divide-line border-y border-line">
+          {spa.treatments.map((t) => (
+            <li class="grid gap-2 py-6 sm:grid-cols-[1fr_auto] sm:gap-8">
+              <div>
+                <h3 class="display text-xl">{t.name}</h3>
+                {t.description && <p class="mt-2 text-ink-muted">{t.description}</p>}
+              </div>
+              <p class="tabular-nums sm:text-right">
+                <span class="block">{formatPrice(t.price)}</span>
+                <span class="text-sm text-ink-muted">{t.durationMin} min</span>
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}

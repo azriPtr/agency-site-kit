@@ -1,0 +1,62 @@
+---
+import { facts, telHref, whatsappHref } from '../../lib/facts';
+import { navItems } from '../../lib/pages';
+
+/**
+ * Name, address and phone (NAP) on every page, read from the same facts as
+ * the JSON-LD. Local search ranks on NAP consistency; here it cannot drift.
+ */
+const { business: biz } = facts;
+const { address: a } = biz;
+---
+
+<footer class="bg-dark text-ondark">
+  <div class="wrap grid gap-10 py-14 md:grid-cols-3">
+    <div>
+      <p class="display text-2xl">{biz.name}</p>
+      <address class="mt-4 not-italic leading-relaxed text-ondark-muted">
+        {a.street}<br />
+        {a.locality}, {a.region} {a.postalCode}<br />
+        {new Intl.DisplayNames(['en'], { type: 'region' }).of(a.country)}
+      </address>
+      <a href={biz.mapUrl} class="mt-3 inline-block text-sm underline underline-offset-4">Open in Google Maps</a>
+    </div>
+
+    <div>
+      <h2 class="eyebrow text-ondark-muted">Contact</h2>
+      <ul class="mt-4 space-y-2">
+        <li><a href={telHref(biz.phone)} class="hover:underline">{biz.phone}</a></li>
+        {
+          biz.whatsapp && (
+            <li>
+              <a href={whatsappHref(biz.whatsapp)} class="hover:underline">
+                WhatsApp {biz.whatsapp}
+              </a>
+            </li>
+          )
+        }
+        <li><a href={`mailto:${biz.email}`} class="hover:underline">{biz.email}</a></li>
+      </ul>
+      {
+        (biz.checkIn || biz.checkOut) && (
+          <p class="mt-4 text-sm text-ondark-muted">
+            {biz.checkIn && `Check-in from ${biz.checkIn}`}
+            {biz.checkIn && biz.checkOut && ' · '}
+            {biz.checkOut && `check-out until ${biz.checkOut}`}
+          </p>
+        )
+      }
+    </div>
+
+    <div>
+      <h2 class="eyebrow text-ondark-muted">Explore</h2>
+      <ul class="mt-4 space-y-2">
+        {navItems.map((item) => <li><a href={item.path} class="hover:underline">{item.nav}</a></li>)}
+        {biz.sameAs.map((url) => <li><a href={url} class="hover:underline">{new URL(url).hostname.replace('www.', '')}</a></li>)}
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-line-dark">
+    <p class="wrap py-6 text-xs text-ondark-muted">© {new Date().getFullYear()} {biz.name}</p>
+  </div>
+</footer>

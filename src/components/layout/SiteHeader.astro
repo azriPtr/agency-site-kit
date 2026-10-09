@@ -1,0 +1,66 @@
+---
+import Button from '../ui/Button.astro';
+import { facts } from '../../lib/facts';
+import { headerCta, navItems } from '../../lib/pages';
+
+/**
+ * Header with the nav from src/lib/pages.ts. The mobile menu is a <details>
+ * element, so it opens without JavaScript and works with a keyboard.
+ */
+const current = Astro.url.pathname.replace(/\.html$/, '').replace(/(.)\/$/, '$1') || '/';
+---
+
+<header class="relative border-b border-line bg-base">
+  <div class="wrap flex min-h-16 items-center justify-between gap-6">
+    <a href="/" class="display text-xl">{facts.business.name}</a>
+
+    <nav aria-label="Main" class="hidden md:block">
+      <ul class="flex items-center gap-7 text-sm">
+        {
+          navItems.map((item) => (
+            <li>
+              <a
+                href={item.path}
+                aria-current={current === item.path ? 'page' : undefined}
+                class="underline-offset-8 hover:underline aria-[current=page]:underline"
+              >
+                {item.nav}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="hidden md:block">
+      <Button href={headerCta.href} label={headerCta.label} external={headerCta.external} />
+    </div>
+
+    <details class="group md:hidden">
+      <summary class="flex min-h-11 cursor-pointer list-none items-center text-sm font-medium [&::-webkit-details-marker]:hidden">
+        <span class="group-open:hidden">Menu</span>
+        <span class="hidden group-open:inline">Close</span>
+      </summary>
+      <nav aria-label="Main" class="absolute inset-x-0 top-16 z-40 border-b border-line bg-base">
+        <ul class="wrap flex flex-col gap-1 py-4">
+          {
+            navItems.map((item) => (
+              <li>
+                <a
+                  href={item.path}
+                  aria-current={current === item.path ? 'page' : undefined}
+                  class="flex min-h-11 items-center text-lg"
+                >
+                  {item.nav}
+                </a>
+              </li>
+            ))
+          }
+          <li class="pt-3">
+            <Button href={headerCta.href} label={headerCta.label} external={headerCta.external} class="w-full" />
+          </li>
+        </ul>
+      </nav>
+    </details>
+  </div>
+</header>

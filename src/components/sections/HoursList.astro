@@ -1,0 +1,27 @@
+---
+import { formatDays, type Hours } from '../../lib/facts';
+
+/** Opening hours from facts, as a definition list. */
+interface Props {
+  hours: Hours[];
+  label?: string;
+}
+
+const { hours, label = 'Opening hours' } = Astro.props;
+---
+
+<div>
+  <p class="eyebrow text-ink-muted">{label}</p>
+  <dl class="mt-3 space-y-1">
+    {
+      hours.map((h) => (
+        <div class="flex justify-between gap-6 border-b border-line py-2">
+          <dt>{formatDays(h.days)}</dt>
+          <dd class="tabular-nums">
+            {h.opens} to {h.closes}
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</div>

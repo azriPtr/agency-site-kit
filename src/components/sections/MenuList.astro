@@ -1,0 +1,63 @@
+---
+import HoursList from './HoursList.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import { facts, formatPrice } from '../../lib/facts';
+
+/**
+ * The restaurant menu from facts.dining. Dishes, prices and diet labels are
+ * facts; the heading and lead are page copy. The same data feeds the Menu
+ * JSON-LD on the dining page.
+ */
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+}
+
+const { eyebrow, title, lead } = Astro.props;
+const dining = facts.dining;
+
+const dietLabel = { vegetarian: 'V', vegan: 'VG', 'gluten-free': 'GF' } as const;
+const dietTitle = { vegetarian: 'Vegetarian', vegan: 'Vegan', 'gluten-free': 'Gluten-free' } as const;
+---
+
+{
+  dining && (
+    <section class="section-y">
+      <div class="wrap grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-20">
+        <div>
+          <SectionHeading eyebrow={eyebrow} title={title} lead={lead} />
+          <div class="mt-8">
+            <HoursList hours={dining.hours} />
+          </div>
+        </div>
+        <div class="space-y-12">
+          {dining.menu.map((section) => (
+            <div>
+              <h3 class="display border-b border-ink pb-2 text-2xl">{section.section}</h3>
+              <ul class="mt-2 divide-y divide-line">
+                {section.items.map((item) => (
+                  <li class="flex justify-between gap-6 py-4">
+                    <div>
+                      <p class="font-medium">
+                        {item.name}
+                        {item.diet.map((d) => (
+                          <abbr title={dietTitle[d]} class="ml-2 text-xs font-normal text-ink-muted no-underline">
+                            {dietLabel[d]}
+                          </abbr>
+                        ))}
+                      </p>
+                      {item.description && <p class="mt-1 text-sm text-ink-muted">{item.description}</p>}
+                    </div>
+                    <p class="shrink-0 tabular-nums">{formatPrice(item.price)}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          <p class="text-xs text-ink-muted">V vegetarian · VG vegan · GF gluten-free</p>
+        </div>
+      </div>
+    </section>
+  )
+}

@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
+import Intro from '../components/sections/Intro.astro';
+import RoomList from '../components/sections/RoomList.astro';
+import CtaBand from '../components/sections/CtaBand.astro';
+import Location from '../components/sections/Location.astro';
+import { facts } from '../lib/facts';
+import { clientImage } from '../lib/images';
+import { headerCta, pages } from '../lib/pages';
+
+// Example home for the kit's placeholder client. /build-from-brief replaces this page.
+const { business: biz } = facts;
+---
+
+<BaseLayout page={pages.home}>
+  <Hero
+    image={clientImage(biz.image.src)}
+    alt={biz.image.alt}
+    eyebrow={`${biz.address.locality}, ${biz.address.region}`}
+    title="Placeholder headline for the example client"
+    lead="The kit's example home page. Run /build-from-brief to replace it with the client's pages."
+    primary={headerCta}
+  />
+  <Intro
+    eyebrow="About"
+    title="Placeholder introduction"
+    keyFacts={[
+      { label: 'Villas', value: String(facts.rooms.length) },
+      { label: 'Check-in', value: biz.checkIn ?? 'Ask us' },
+    ]}
+  >
+    <p>{biz.description}</p>
+  </Intro>
+  <RoomList eyebrow="Stay" title="Placeholder room heading" enquireHref={() => headerCta.href} />
+  <CtaBand title="Placeholder call to action" cta={headerCta} />
+  <Location eyebrow="Find us" title="Placeholder location heading">
+    <p>Directions copy goes here, using only distances from the brief.</p>
+  </Location>
+</BaseLayout>

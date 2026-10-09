@@ -1,0 +1,52 @@
+---
+import Button from '../ui/Button.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import { facts, telHref, whatsappHref } from '../../lib/facts';
+
+/**
+ * Address, contact and directions. No embedded Google Map: the iframe pulls
+ * in heavy third-party script and hurts the performance gate, and a link to
+ * Maps does the same job. The default slot is for directions copy, which must
+ * only use distances and times from the brief.
+ */
+interface Props {
+  eyebrow?: string;
+  title: string;
+}
+
+const { eyebrow, title } = Astro.props;
+const { business: biz } = facts;
+const { address: a } = biz;
+---
+
+<section class="section-y bg-base-alt">
+  <div class="wrap grid gap-10 lg:grid-cols-2 lg:gap-20">
+    <div>
+      <SectionHeading eyebrow={eyebrow} title={title} />
+      <div class="copy mt-6 text-ink-muted">
+        <slot />
+      </div>
+    </div>
+    <div class="space-y-6">
+      <address class="not-italic text-lg leading-relaxed">
+        {biz.name}<br />
+        {a.street}<br />
+        {a.locality}, {a.region} {a.postalCode}
+      </address>
+      <ul class="space-y-2">
+        <li><a href={telHref(biz.phone)} class="underline underline-offset-4">{biz.phone}</a></li>
+        {
+          biz.whatsapp && (
+            <li>
+              <a href={whatsappHref(biz.whatsapp)} class="underline underline-offset-4">
+                WhatsApp {biz.whatsapp}
+              </a>
+            </li>
+          )
+        }
+        <li><a href={`mailto:${biz.email}`} class="underline underline-offset-4">{biz.email}</a></li>
+      </ul>
+      <Button href={biz.mapUrl} label="Get directions" external />
+    </div>
+  </div>
+</section>

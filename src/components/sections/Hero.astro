@@ -1,0 +1,54 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import Button from '../ui/Button.astro';
+
+/**
+ * Full-bleed photo with the page's only h1. The photo is the LCP element on
+ * nearly every hospitality page, so it loads eagerly with high fetch priority.
+ * Every other image in the kit is lazy.
+ */
+interface Props {
+  image: ImageMetadata;
+  alt: string;
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  primary?: { label: string; href: string; external?: boolean };
+  secondary?: { label: string; href: string; external?: boolean };
+  size?: 'tall' | 'short';
+}
+
+const { image, alt, eyebrow, title, lead, primary, secondary, size = 'tall' } = Astro.props;
+---
+
+<section
+  class:list={[
+    'relative isolate flex items-end overflow-hidden bg-dark text-ondark',
+    size === 'tall' ? 'min-h-[78svh]' : 'min-h-[46svh]',
+  ]}
+>
+  <Image
+    src={image}
+    alt={alt}
+    widths={[640, 960, 1280, 1920, 2400]}
+    sizes="100vw"
+    loading="eager"
+    fetchpriority="high"
+    class="absolute inset-0 -z-10 h-full w-full object-cover"
+  />
+  <div class="absolute inset-0 -z-10 bg-linear-to-t from-black/75 via-black/30 to-black/5" aria-hidden="true"></div>
+  <div class="wrap w-full pb-14 pt-32 md:pb-20">
+    {eyebrow && <p class="eyebrow text-ondark">{eyebrow}</p>}
+    <h1 class="display mt-4 max-w-3xl text-4xl sm:text-5xl lg:text-6xl">{title}</h1>
+    {lead && <p class="mt-5 max-w-xl text-lg leading-relaxed text-ondark">{lead}</p>}
+    {
+      (primary || secondary) && (
+        <div class="mt-8 flex flex-wrap gap-3">
+          {primary && <Button {...primary} />}
+          {secondary && <Button {...secondary} variant="onDark" />}
+        </div>
+      )
+    }
+  </div>
+</section>

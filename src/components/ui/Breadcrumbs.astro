@@ -1,0 +1,28 @@
+---
+/**
+ * Visible trail for the BreadcrumbList that BaseLayout writes to JSON-LD.
+ * Same data, so the two never disagree.
+ */
+interface Props {
+  trail: { name: string; path: string }[];
+}
+
+const { trail } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class="wrap pt-6 text-sm text-ink-muted">
+  <ol class="flex flex-wrap gap-2">
+    {
+      trail.map((t, i) => (
+        <li class="flex gap-2">
+          {i > 0 && <span aria-hidden="true">/</span>}
+          {i === trail.length - 1 ? (
+            <span aria-current="page" class="text-ink">{t.name}</span>
+          ) : (
+            <a href={t.path} class="underline-offset-4 hover:underline">{t.name}</a>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>

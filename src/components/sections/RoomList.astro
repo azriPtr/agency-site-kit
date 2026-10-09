@@ -1,0 +1,82 @@
+---
+import { Image } from 'astro:assets';
+import Button from '../ui/Button.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import { facts, formatPrice, type Room } from '../../lib/facts';
+import { clientImage } from '../../lib/images';
+
+/**
+ * Room types from client/facts.yaml. Size, bed, occupancy and price are
+ * rendered from facts and cannot be edited here; only the surrounding copy
+ * (heading, lead, the enquiry label) is page copy.
+ *
+ * Each room gets an id anchor, so /rooms#pool-villa links straight to it.
+ */
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  lead?: string;
+  rooms?: Room[];
+  /** Where "Enquire" goes for a room. Defaults to the contact page with the room preselected. */
+  enquireHref?: (room: Room) => string;
+  enquireLabel?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  lead,
+  rooms = facts.rooms,
+  enquireHref = (r: Room) => `/contact?room=${r.id}`,
+  enquireLabel = 'Enquire',
+} = Astro.props;
+---
+
+<section class="section-y">
+  <div class="wrap">
+    {title && <SectionHeading eyebrow={eyebrow} title={title} lead={lead} />}
+    <div class:list={['grid gap-12 md:grid-cols-2', title && 'mt-12']}>
+      {
+        rooms.map((room) => (
+          <article id={room.id} class="scroll-mt-24">
+            <Image
+              src={clientImage(room.image.src)}
+              alt={room.image.alt}
+              widths={[480, 720, 960]}
+              sizes="(min-width: 48rem) 50vw, 100vw"
+              class="aspect-[4/3] w-full rounded-card object-cover"
+            />
+            <div class="mt-5 flex items-baseline justify-between gap-4">
+              <h3 class="display text-2xl">{room.name}</h3>
+              <p class="shrink-0 text-sm text-ink-muted">
+                From <span class="font-medium text-ink">{formatPrice(room.priceFrom)}</span> / night
+              </p>
+            </div>
+            <dl class="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-sm text-ink-muted">
+              <div class="flex gap-1">
+                <dt>Size</dt>
+                <dd class="text-ink">{room.sizeSqm} m²</dd>
+              </div>
+              <div class="flex gap-1">
+                <dt>Bed</dt>
+                <dd class="text-ink">{room.bed}</dd>
+              </div>
+              <div class="flex gap-1">
+                <dt>Sleeps</dt>
+                <dd class="text-ink">{room.maxGuests}</dd>
+              </div>
+            </dl>
+            {room.features.length > 0 && (
+              <ul class="mt-4 flex flex-wrap gap-2">
+                {room.features.map((f) => (
+                  <li class="rounded-btn border border-line px-3 py-1 text-xs">{f}</li>
+                ))}
+              </ul>
+            )}
+            <Button href={enquireHref(room)} label={`${enquireLabel}: ${room.name}`} variant="secondary" class="mt-6" />
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

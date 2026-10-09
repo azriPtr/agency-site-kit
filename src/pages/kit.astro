@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
+import Intro from '../components/sections/Intro.astro';
+import SplitFeature from '../components/sections/SplitFeature.astro';
+import RoomList from '../components/sections/RoomList.astro';
+import MenuList from '../components/sections/MenuList.astro';
+import TreatmentList from '../components/sections/TreatmentList.astro';
+import Gallery from '../components/sections/Gallery.astro';
+import Faq from '../components/sections/Faq.astro';
+import Location from '../components/sections/Location.astro';
+import CtaBand from '../components/sections/CtaBand.astro';
+import { facts } from '../lib/facts';
+import { clientImage } from '../lib/images';
+import { headerCta, internalPages } from '../lib/pages';
+
+/**
+ * Section catalog: every section rendered with the current client's facts and
+ * tokens. Designers review the look here; /build-from-brief picks from this
+ * list. noindex and out of the sitemap.
+ */
+const { business: biz } = facts;
+const hero = clientImage(biz.image.src);
+const photos = [biz.image, ...facts.rooms.map((r) => r.image)].map((i) => ({ image: clientImage(i.src), alt: i.alt }));
+const label = 'wrap block py-3 font-mono text-xs text-ink-muted';
+---
+
+<BaseLayout page={internalPages.kit} noindex>
+  <span class={label}>sections/Hero.astro</span>
+  <Hero
+    image={hero}
+    alt={biz.image.alt}
+    eyebrow="Eyebrow"
+    title="Hero title, the page's only h1"
+    lead="Lead sentence."
+    primary={headerCta}
+    secondary={{ label: 'Secondary', href: '#' }}
+    size="short"
+  />
+  <span class={label}>sections/Intro.astro</span>
+  <Intro eyebrow="Eyebrow" title="Intro title" keyFacts={[{ label: 'Check-in', value: biz.checkIn ?? '' }]}>
+    <p>Body copy in the default slot.</p>
+  </Intro>
+  <span class={label}>sections/SplitFeature.astro</span>
+  <SplitFeature image={hero} alt={biz.image.alt} eyebrow="Eyebrow" title="Split feature title" cta={{ label: 'Link', href: '#' }} tone="alt">
+    <p>Body copy in the default slot.</p>
+  </SplitFeature>
+  <span class={label}>sections/RoomList.astro</span>
+  <RoomList eyebrow="Eyebrow" title="Room list title" lead="Rooms, sizes and prices come from facts." enquireHref={() => '#'} />
+  <span class={label}>sections/MenuList.astro</span>
+  <MenuList eyebrow="Eyebrow" title="Menu list title" />
+  <span class={label}>sections/TreatmentList.astro</span>
+  <TreatmentList eyebrow="Eyebrow" title="Treatment list title" />
+  <span class={label}>sections/Gallery.astro</span>
+  <Gallery title="Gallery title" images={photos} />
+  <span class={label}>sections/Faq.astro</span>
+  <Faq eyebrow="Eyebrow" />
+  <span class={label}>sections/Location.astro</span>
+  <Location eyebrow="Eyebrow" title="Location title">
+    <p>Directions copy in the default slot.</p>
+  </Location>
+  <span class={label}>sections/CtaBand.astro</span>
+  <CtaBand title="CTA band title" text="One supporting sentence." cta={headerCta} />
+</BaseLayout>

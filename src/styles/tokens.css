@@ -1,0 +1,37 @@
+/* ============================================================
+   Client design tokens.
+
+   The only file that changes between clients' visual identities.
+   The Claude Design handoff replaces the values here; components
+   use the names and never a raw colour or font.
+
+   Contrast is checked on every build by the a11y gate (axe), so a
+   muted text colour that drops under 4.5:1 fails the PR.
+   ============================================================ */
+:root {
+  --color-bg: #f5f1ea;
+  --color-bg-alt: #ebe4d8;
+  --color-surface: #fffcf7;
+  --color-surface-dark: #1f2a24;
+
+  --color-text: #1d1b18;
+  --color-text-muted: #59544b;
+  --color-text-on-dark: #f5f1ea;
+  --color-text-on-dark-muted: #c9c2b5;
+
+  --color-accent: #2f5a46;
+  --color-accent-hover: #244637;
+  --color-text-on-accent: #ffffff;
+
+  --color-border: #d9d0c1;
+  --color-border-dark: #3a463f;
+
+  /* Faces come from the Fonts API in astro.config.mjs. */
+  --font-heading: var(--font-display-face);
+  --font-text: var(--font-text-face);
+
+  --shape-card: 2px;
+  --shape-btn: 999px;
+
+  --wrap: 72rem;
+}

@@ -1,0 +1,35 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import SectionHeading from '../ui/SectionHeading.astro';
+
+/** Photo grid. Every image needs alt text that says what is in it. */
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  images: { image: ImageMetadata; alt: string }[];
+}
+
+const { eyebrow, title, images } = Astro.props;
+---
+
+<section class="section-y">
+  <div class="wrap">
+    {title && <SectionHeading eyebrow={eyebrow} title={title} />}
+    <ul class:list={['grid grid-cols-2 gap-3 md:grid-cols-3', title && 'mt-10']}>
+      {
+        images.map((img, i) => (
+          <li class:list={[i === 0 && 'col-span-2 row-span-2']}>
+            <Image
+              src={img.image}
+              alt={img.alt}
+              widths={[360, 720, 1080]}
+              sizes={i === 0 ? '(min-width: 48rem) 66vw, 100vw' : '(min-width: 48rem) 33vw, 50vw'}
+              class="h-full w-full rounded-card object-cover"
+            />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
