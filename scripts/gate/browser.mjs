@@ -37,6 +37,22 @@ export async function checkInBrowser({ base, pages, config, outDir, shots = true
         }
 
         if (shots) {
+          // Lazy images only load near the viewport. Scroll through the page and wait for them, so the
+          // full-page screenshot shows every photo instead of empty boxes.
+          await page.evaluate(async () => {
+            for (let y = 0; y < document.documentElement.scrollHeight; y += window.innerHeight / 2) {
+              window.scrollTo(0, y);
+              await new Promise((r) => setTimeout(r, 80));
+            }
+            window.scrollTo(0, 0);
+            const pending = [...document.images].filter((img) => !img.complete);
+            await Promise.all(
+              pending.map((img) => new Promise((r) => {
+                img.addEventListener('load', r);
+                img.addEventListener('error', r);
+              })),
+            );
+          });
           const file = `${outDir}/screenshots/${vp.name}${path === '/' ? '-home' : path.replace(/\//g, '-')}.png`;
           await page.screenshot({ path: file, fullPage: true });
           screenshots.push(file);

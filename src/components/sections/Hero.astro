@@ -1,12 +1,14 @@
 ---
 import type { ImageMetadata } from 'astro';
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import Button from '../ui/Button.astro';
 
 /**
  * Full-bleed photo with the page's only h1. The photo is the LCP element on
- * nearly every hospitality page, so it loads eagerly with high fetch priority.
- * Every other image in the kit is lazy.
+ * nearly every hospitality page, so it loads eagerly with high fetch priority,
+ * as AVIF with a WebP fallback, in widths that match phone screens (a 412px
+ * phone at 1.75x needs 721px, so 768 rather than 960). On Demo Resort this took
+ * mobile LCP from 2927 ms to 2028 ms. Every other image in the kit is lazy.
  */
 interface Props {
   image: ImageMetadata;
@@ -28,10 +30,11 @@ const { image, alt, eyebrow, title, lead, primary, secondary, size = 'tall' } = 
     size === 'tall' ? 'min-h-[78svh]' : 'min-h-[46svh]',
   ]}
 >
-  <Image
+  <Picture
     src={image}
     alt={alt}
-    widths={[640, 960, 1280, 1920, 2400]}
+    formats={['avif', 'webp']}
+    widths={[480, 768, 1080, 1440, 1920, 2400]}
     sizes="100vw"
     loading="eager"
     fetchpriority="high"
