@@ -1,0 +1,21 @@
+# Human review: red until every box under "## Human review" in the PR body is
+# ticked. Re-runs when the PR body is edited.
+name: Human review
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  checklist:
+    name: Human review
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: scripts/ci
+      - name: Check the review checklist
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: node scripts/ci/review-checklist.mjs

@@ -1,0 +1,52 @@
+# Staging check: after a merge to main, waits for Vercel to put that commit on
+# the staging domain, then runs the gate against the live staging URL. Real CDN,
+# real compression, real headers. Staging must be noindex.
+name: Staging check
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: staging
+  cancel-in-progress: true
+
+jobs:
+  staging:
+    name: Staging check
+    if: vars.STAGING_URL != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    environment:
+      name: staging
+      url: ${{ vars.STAGING_URL }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+
+      - name: Wait for Vercel to deploy this commit
+        run: scripts/ci/wait-for-deploy.sh "${{ vars.STAGING_URL }}" "${{ github.sha }}"
+
+      - name: Gate against live staging
+        id: gate
+        run: pnpm gate --url "${{ vars.STAGING_URL }}" --expect noindex --only seo,lh --lh-runs 3 --no-shots ${{ vars.GATE_FLAGS }}
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: staging-report
+          path: reports/
+
+      - name: Tell the team
+        if: always()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: node scripts/ci/notify-discord.mjs --title "Staging updated" --url "${{ vars.STAGING_URL }}" --outcome "${{ steps.gate.outcome }}"

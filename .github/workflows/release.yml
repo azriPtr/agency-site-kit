@@ -1,0 +1,76 @@
+# Release to production: a button in the Actions tab. It ships a commit that
+# already passed every step, by moving the `production` branch to it. Vercel
+# deploys the `production` branch to the live domain.
+#
+# This workflow only moves forward. To undo a release, use Instant Rollback in
+# Vercel, then fix forward with a PR.
+name: Release to production
+
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: Commit on main to release. Empty means the latest main.
+        required: false
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      checks: read
+      pull-requests: read
+    environment:
+      name: production
+      url: ${{ steps.site.outputs.url }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Resolve commit and production URL
+        id: site
+        run: |
+          echo "sha=${{ inputs.sha || github.sha }}" >> "$GITHUB_OUTPUT"
+          echo "url=$(node -e "import('yaml').then(y=>console.log(y.parse(require('fs').readFileSync('client/facts.yaml','utf8')).site.url))")" >> "$GITHUB_OUTPUT"
+
+      - name: Preflight (gate, staging, human review)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/ci/release-preflight.sh "${{ steps.site.outputs.sha }}"
+
+      - name: Move production to this commit
+        # Fast-forward only. If production has commits main does not, this fails instead of overwriting them.
+        run: git push origin "${{ steps.site.outputs.sha }}:refs/heads/production"
+
+      - name: Wait for Vercel to deploy it
+        run: scripts/ci/wait-for-deploy.sh "${{ steps.site.outputs.url }}" "${{ steps.site.outputs.sha }}"
+
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Gate against live production
+        id: gate
+        run: pnpm gate --url "${{ steps.site.outputs.url }}" --expect indexable --only seo,lh --lh-runs 3 --no-shots
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: production-report
+          path: reports/
+
+      - name: Tell the team
+        if: always()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: node scripts/ci/notify-discord.mjs --title "Production release" --url "${{ steps.site.outputs.url }}" --outcome "${{ job.status }}"

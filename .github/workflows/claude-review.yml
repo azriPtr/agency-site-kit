@@ -1,0 +1,45 @@
+# Claude review: reads the PR diff against the client's facts and brief and
+# the kit's rules, then comments. It advises; it does not approve, block, edit
+# or push. The human reviewer answers or fixes each comment.
+name: Claude review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    name: Claude review
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Review pull request #${{ github.event.pull_request.number }} in ${{ github.repository }}.
+            The base branch is origin/${{ github.base_ref }}.
+
+            Follow .claude/skills/site-review/SKILL.md exactly. It defines what to check
+            and how to report. Post inline comments for findings tied to a line, then
+            one summary comment with `gh pr comment ${{ github.event.pull_request.number }} --body-file <file>`.
+            Do not edit files, commit or push.
+          claude_args: |
+            --max-turns 40
+            --allowedTools "Read,Grep,Glob,Agent,Write(/tmp/**),Bash(git diff *),Bash(git log *),Bash(git show *),Bash(gh pr view *),Bash(gh pr comment *),mcp__github_inline_comment__create_inline_comment"

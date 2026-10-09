@@ -6,7 +6,9 @@
 #
 # Rules
 # - Only facts the client confirmed in writing. If a value is unknown, write
-#   TODO and leave it: staging still builds, the production gate fails on TODO.
+#   TODO. In a text field the site still builds and the gate fails on the
+#   visible TODO; in a typed field (email, URL, price) the build fails. Either
+#   way it cannot reach production.
 # - Prices are whole numbers in business.currency.
 # - Image paths are relative to src/assets/client/. Alt text describes the photo.
 #

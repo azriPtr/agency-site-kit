@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(pnpm dev *)",
+      "Bash(pnpm build *)",
+      "Bash(pnpm check *)",
+      "Bash(pnpm preview *)",
+      "Bash(pnpm astro preview *)",
+      "Bash(pnpm gate *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git switch *)",
+      "Bash(git checkout -b *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push -u origin site/*)",
+      "Bash(git push -u origin fix/*)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr checks *)",
+      "Bash(gh run view *)"
+    ],
+    "deny": [
+      "Bash(git push origin main *)",
+      "Bash(git push * production *)",
+      "Bash(git push --force *)",
+      "Bash(vercel --prod *)",
+      "Bash(vercel deploy --prod *)",
+      "Read(./.env)",
+      "Read(./.env.*)"
+    ]
+  }
+}

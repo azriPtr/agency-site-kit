@@ -1,0 +1,63 @@
+# Quality gate: builds the site and runs `pnpm gate` against it on every PR and
+# every push to main. Same command a developer runs locally.
+name: Quality gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    name: Quality gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+
+      - name: Type check
+        run: pnpm check
+      - name: Build
+        run: pnpm build
+      - name: Serve the build
+        run: pnpm preview --port 4321
+
+      - name: Run the gate
+        id: gate
+        continue-on-error: true
+        # GATE_FLAGS is a repo variable. The kit sets --allow-placeholders for its example client; client repos leave it empty.
+        run: pnpm gate --lh-runs 3 ${{ vars.GATE_FLAGS }}
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: gate-report
+          path: reports/
+          retention-days: 14
+
+      - name: Comment on the PR
+        if: github.event_name == 'pull_request' && always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat reports/gate.md > comment.md
+          echo "[Full report and screenshots](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> comment.md
+          scripts/ci/upsert-comment.sh ${{ github.event.pull_request.number }} '<!-- quality-gate -->' comment.md
+
+      - name: Fail if the gate failed
+        if: steps.gate.outcome == 'failure'
+        run: exit 1

@@ -38,6 +38,9 @@ const ogImage = await getImage({ src: image ?? clientImage(biz.image.src), width
 const bizImage = await getImage({ src: clientImage(biz.image.src), width: 1600, format: 'jpg' });
 const absolute = (src: string) => new URL(src, site.url).href;
 
+// The commit this page was built from. The release workflow waits until the live site serves it.
+const build = process.env.VERCEL_GIT_COMMIT_SHA ?? 'local';
+
 const trail = breadcrumbs ? [{ name: 'Home', path: '/' }, ...breadcrumbs] : null;
 const graph = toJsonLd([
   websiteNode(),
@@ -71,6 +74,7 @@ const graph = toJsonLd([
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="theme-color" content="#1f2a24" />
+    <meta name="build" content={build} />
 
     <Font cssVariable="--font-display-face" preload />
     <Font cssVariable="--font-text-face" preload />
