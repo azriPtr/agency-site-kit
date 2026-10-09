@@ -11,6 +11,7 @@ const { site } = parse(readFileSync(new URL('./client/facts.yaml', import.meta.u
 
 // vercel.json sends X-Robots-Tag: noindex on every host except the production one. If that host and
 // facts disagree, either production is noindex (invisible to search) or staging is indexable.
+/** @type {{ headers?: { headers: { key: string }[], missing?: { type: string, value: string }[] }[] }} */
 const vercel = JSON.parse(readFileSync(new URL('./vercel.json', import.meta.url), 'utf8'));
 const noindexRule = vercel.headers?.find((h) => h.headers.some((x) => x.key.toLowerCase() === 'x-robots-tag'));
 const indexableHost = noindexRule?.missing?.find((m) => m.type === 'host')?.value;
