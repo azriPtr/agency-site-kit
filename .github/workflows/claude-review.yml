@@ -46,9 +46,20 @@ jobs:
             The base branch is origin/${{ github.base_ref }}.
 
             Follow .claude/skills/site-review/SKILL.md exactly. It defines what to check
-            and how to report. Post inline comments for findings tied to a line, then
-            one summary comment with `gh pr comment ${{ github.event.pull_request.number }} --body-file <file>`.
+            and how to report. Post inline comments for findings tied to a line. Then write
+            the summary to /tmp/claude-review.md and post it with
+            `gh pr comment ${{ github.event.pull_request.number }} --body-file /tmp/claude-review.md`.
             Do not edit files, commit or push.
           claude_args: |
             --max-turns 40
-            --allowedTools "Read,Grep,Glob,Agent,Write(/tmp/**),Bash(git diff *),Bash(git log *),Bash(git show *),Bash(gh pr view *),Bash(gh pr comment *),mcp__github_inline_comment__create_inline_comment"
+            --allowedTools "Read,Grep,Glob,Agent,Edit(//tmp/**),Bash(git diff *),Bash(git log *),Bash(git show *),Bash(gh pr view *),Bash(gh pr comment *),mcp__github_inline_comment__create_inline_comment"
+
+      # What the reviewer read and said, kept for 14 days. Useful when a comment needs explaining.
+      - name: Keep the review transcript
+        if: always() && steps.token.outputs.ok == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: claude-review-transcript
+          path: ${{ runner.temp }}/claude-execution-output.json
+          retention-days: 14
+          if-no-files-found: ignore
