@@ -30,11 +30,15 @@ cannot push to `main` or `production`, and cannot change the gate that checks it
 
 ## Setting up a new client
 
-You need: GitHub CLI (`gh`) logged in, Vercel CLI logged in, Claude Code, Node 24, pnpm.
+You need, once per laptop: Node 24, pnpm, GitHub CLI (`gh auth login`), Vercel CLI (`vercel login`),
+Claude Code (`claude auth login`), and a clone of this kit. Then, from a terminal inside the kit:
 
 ```bash
-scripts/new-client.sh <client>-site
+git pull
+OWNER=<github-org> scripts/new-client.sh <client>-site
 ```
+
+Leave out `OWNER` to create the repo under your own account. Add `VISIBILITY=public` for a public repo.
 
 This creates the repo from the template next to the kit, creates the `production` branch Vercel will
 track, installs dependencies and the browser the gate uses, and prints the steps below.
