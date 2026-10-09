@@ -10,6 +10,9 @@ const checks = [
   ['lighthouse', 'Lighthouse'],
 ];
 
+/** Table cells cannot contain a raw pipe: page titles like "Villas | Demo Resort" would split the row. */
+const cell = (value) => String(value).replace(/\|/g, '\\|');
+
 export function toMarkdown(report, config) {
   const errors = report.findings.filter((f) => f.level === 'error');
   const warnings = report.findings.filter((f) => f.level === 'warn');
@@ -49,7 +52,7 @@ export function toMarkdown(report, config) {
 
   if (report.seo?.length) {
     lines.push('', '### Structured data found', '', '| Page | Title | JSON-LD types |', '| --- | --- | --- |');
-    for (const p of report.seo) lines.push(`| \`${p.path}\` | ${p.title} | ${p.types.join(', ') || 'none'} |`);
+    for (const p of report.seo) lines.push(`| \`${p.path}\` | ${cell(p.title)} | ${cell(p.types.join(', ') || 'none')} |`);
   }
 
   if (errors.length) {
