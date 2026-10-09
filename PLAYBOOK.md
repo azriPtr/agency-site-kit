@@ -36,8 +36,8 @@ You need: GitHub CLI (`gh`) logged in, Vercel CLI logged in, Claude Code, Node 2
 scripts/new-client.sh <client>-site
 ```
 
-This creates the repo from the template next to the kit, installs dependencies and the browser the gate
-uses, and prints the steps below.
+This creates the repo from the template next to the kit, creates the `production` branch Vercel will
+track, installs dependencies and the browser the gate uses, and prints the steps below.
 
 1. **Notes.** Put everything the client sent into `client/notes/` (emails, WhatsApp exports, call notes,
    old website text). Open Claude Code in the repo and run `/intake client/notes/`. Send
@@ -47,8 +47,8 @@ uses, and prints the steps below.
    `src/assets/client/CREDITS.md`. `/intake` picks photos for the business and each room and writes alt
    text from what is in each photo.
 3. **Vercel.** `vercel link --yes --project <client>-site` creates the project and connects the repo.
-   In the dashboard, set Settings → Environments → Production → Branch Tracking to `production`. Add the
-   domains:
+   In the dashboard, set Settings → Environments → Production → Branch Tracking to `production` (the
+   API cannot change it, and the branch must already exist). Add the domains:
    ```bash
    vercel api /v10/projects/<client>-site/domains -X POST -f name=<domain>
    vercel api /v10/projects/<client>-site/domains -X POST -f name=staging.<domain> -f gitBranch=main
